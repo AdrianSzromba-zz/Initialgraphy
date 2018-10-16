@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import pl.adrianszromba.app.Initialgraphy.io.entity.UserEntity;
 
 @Repository
-public interface UserRepository extends CrudRepository {
+public interface UserRepository extends CrudRepository <UserEntity, Long>{
     UserEntity findUserByEmail(String email);
 }
