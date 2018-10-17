@@ -2,6 +2,7 @@ package pl.adrianszromba.app.Initialgraphy.service.impl;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.adrianszromba.app.Initialgraphy.appl.dto.UserDto;
 import pl.adrianszromba.app.Initialgraphy.appl.repository.UserRepository;
@@ -12,13 +13,15 @@ import pl.adrianszromba.app.Initialgraphy.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final Utils utils;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, Utils utils) {
+    public UserServiceImpl(UserRepository userRepository, Utils utils, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.utils = utils;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, userEntity);
 
         String publicUserId = utils.generateUserId(30);
-        userEntity.setEncryptedPassword("test");
+        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userEntity.setUserId(publicUserId);
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
