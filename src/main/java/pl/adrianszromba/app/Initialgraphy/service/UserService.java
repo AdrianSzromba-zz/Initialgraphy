@@ -5,4 +5,5 @@ import pl.adrianszromba.app.Initialgraphy.appl.dto.UserDto;
 
 public interface UserService extends UserDetailsService {
     UserDto createUser (UserDto user);
+    UserDto getUser(String email);
 }

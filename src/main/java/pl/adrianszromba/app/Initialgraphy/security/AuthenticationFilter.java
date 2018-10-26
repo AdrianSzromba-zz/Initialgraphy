@@ -9,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.adrianszromba.app.Initialgraphy.SpringApplicationContext;
+import pl.adrianszromba.app.Initialgraphy.appl.dto.UserDto;
+import pl.adrianszromba.app.Initialgraphy.service.UserService;
 import pl.adrianszromba.app.Initialgraphy.ui.model.request.UserLoginRequestModel;
 
 import javax.servlet.FilterChain;
@@ -50,5 +53,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
 				.signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
 				.compact();
+
+		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+		UserDto userDto = userService.getUser(userName);
+
+		response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+		response.addHeader("UserID", userDto.getUserId());
 	}
 }
